@@ -1,29 +1,21 @@
-import React, {useContext, useEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef} from 'react';
 import Sort, {sortList} from "../components/Sort";
 import Skeleton from "../components/PizzaBlock/Skeleton";
 import PizzaBlock from "../components/PizzaBlock";
 import Categories from "../components/Categories";
 import Pagination from "../components/Pagination";
-import {SearchContext} from "../App";
 import {useDispatch, useSelector} from "react-redux";
 import {setCategoryId, setCurrentPage, setFilter} from "../redux/slices/filterSlice";
 import qs from 'qs';
-
-import {useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {fetchPizzas as fetchPizza, setItems} from "../redux/slices/pizzaSlice";
 
 const Home = () => {
     const navigate = useNavigate();
-    // const {searchValue} = useContext(SearchContext);
-
-    //  с помощью этого флажка фиксим двойной запрос
     const dispatch = useDispatch();
-    //const sortItem = useSelector(state => state.filter.sort);
-    //const currentPage = useSelector(state => state.filter.currentPage);
-    const {sort: sortItem, currentPage, searchValue} = useSelector(state => state.filter);
-    const items = useSelector(state => state.pizza.items);
-    const status = useSelector(state => state.pizza.status);
 
+    const {sort: sortItem, currentPage, searchValue} = useSelector(state => state.filter);
+    const {items, status} = useSelector(state => state.pizza);
 
     const isSearch = useRef(false);
     const isMounted = useRef(false);
@@ -84,9 +76,6 @@ const Home = () => {
     }, [categoryIndex, sortItem, searchValue, currentPage])
 
 
-    // фильтр на фронтенде, но обычно на практике используют бекенд
-    // console.log('item:',item.filter(pizza=>pizza.title.toLowerCase().includes(searchValue.toLowerCase())));
-
     return (
         <>
             <div className="container">
@@ -97,8 +86,9 @@ const Home = () => {
                 <h2 className="content__title">Все пиццы</h2>
                 <div className="content__items">
                     {status === 'loading' ? ([...new Array(6)].map((_, index) => <Skeleton
-                        key={index}/>)) : items.map(obj => (
-                        <PizzaBlock key={obj.id}{...obj}/>
+                        key={index}/>)) : items.map(obj => (<Link key={obj.id} to={`pizza/${obj.id}`}>
+                            <PizzaBlock {...obj}/>
+                        </Link>
                     ))}
                 </div>
                 <Pagination currentPage={currentPage}

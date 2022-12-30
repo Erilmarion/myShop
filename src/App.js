@@ -4,7 +4,7 @@ import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 import Cart from "./pages/Cart";
 import {Route, Routes} from "react-router-dom";
-import {createContext, useState} from "react";
+import OnePizza from "./components/OnePizza";
 
 
 function App() {
@@ -17,6 +17,7 @@ function App() {
                 <div className="content">
                     <Routes>
                         <Route path='/' element={<Home/>}/>
+                        <Route path='pizza/:id' element={<OnePizza/>}/>
                         <Route path='/cart' element={<Cart/>}/>
                         <Route path='*' element={<NotFound/>}/>
                     </Routes>
