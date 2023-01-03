@@ -2,10 +2,13 @@ import React, {useEffect, useState} from 'react';
 import {useParams} from "react-router-dom";
 import axios from "axios";
 
-const OnePizza = () => {
+const OnePizza: React.FC = () => {
 
-    const [data, setData] = useState();
+    const [data, setData] = useState <{imageUrl : string }>();
+
+
     let {id} = useParams();
+
     useEffect(() => {
         async function fetchPizza() {
             try {
@@ -22,8 +25,9 @@ const OnePizza = () => {
     }, [])
 
     if (!data) {
-        return (<> зпгждллоож</>)
+        return (<> Loading...</>)
     }
+
     return (
         <div className='container'>
             <h1>Одна пицца и её характеристики</h1>

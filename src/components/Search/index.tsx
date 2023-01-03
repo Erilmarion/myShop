@@ -1,13 +1,13 @@
 import styles from './Search.module.scss'
-import {useCallback, useContext, useRef, useState} from "react";
-
+import {useCallback, useRef, useState} from "react";
+import React from 'react'
 import debounce from 'lodash.debounce'
 import {setSearchValue} from "../../redux/slices/filterSlice";
 import {useDispatch} from "react-redux";
 
 
-const Search = () => {
-    const inputRef = useRef();
+const Search: React.FC = () => {
+    const inputRef = useRef<HTMLInputElement>(null);
     const [value, setValue] = useState('');
     const dispatch = useDispatch();
     // debounce => чтобы каждым нажатием не загружать сервер.
@@ -16,17 +16,19 @@ const Search = () => {
     }, 400), []);
 
 
-    const onChangeInput = (e) => {
+    const onChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
         setValue(e.target.value);
         updateServiceValue(e.target.value)
     };
 
 
     const onClickClear = () => {
+        // e: React.MouseEvent<HTMLInputElement>  when click
+
+
         dispatch(setSearchValue(''));
         setValue('');
-        //после  очищения, добавляем фокус!
-        inputRef.current.focus();
+        inputRef.current?.focus();
     }
 
     return (
