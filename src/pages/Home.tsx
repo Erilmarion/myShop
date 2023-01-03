@@ -1,10 +1,10 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useCallback, useEffect, useRef} from 'react';
 import Sort, {sortList} from "../components/Sort";
 import Skeleton from "../components/PizzaBlock/Skeleton";
 import PizzaBlock from "../components/PizzaBlock";
 import Categories from "../components/Categories";
 import Pagination from "../components/Pagination";
-import { useSelector} from "react-redux";
+import {useSelector} from "react-redux";
 import {FilterSliceState, setCategoryId, setCurrentPage, setFilter} from "../redux/slices/filterSlice";
 import qs from 'qs';
 import {Link, useNavigate} from "react-router-dom";
@@ -24,9 +24,11 @@ const Home: React.FC = () => {
 
     const categoryIndex = useSelector((state: any) => state.filter.categoryId);
 
-    const onChangeCategory = (id: number) => {
+    const onChangeCategory = useCallback((id: number) => {
         dispatch(setCategoryId(id));
-    };
+    }, []);
+
+
     const onChangePage = (number: number) => {
         dispatch(setCurrentPage(number));
     }
@@ -34,7 +36,6 @@ const Home: React.FC = () => {
     const fetchPizzas = async () => {
 
         dispatch(
-
             fetchPizza({
                 categoryId: categoryIndex,
                 sortItem,
@@ -50,9 +51,10 @@ const Home: React.FC = () => {
         if (window.location.search) {
             const params = qs.parse(window.location.search.substring(1));
             const sort = sortList.find(obj => obj.sort === params.sort)
-            if(sort){
+            if (sort) {
                 params.sort = sort;
             }
+            params.categoryId = categoryIndex;
             dispatch(setFilter(params as unknown as FilterSliceState));
             isSearch.current = true;
         }
@@ -86,16 +88,16 @@ const Home: React.FC = () => {
         <>
             <div className="container">
                 <div className="content__top">
-                    <Categories categoryIndex={categoryIndex} setCategoryIndex={(i: number) => (onChangeCategory(i))}/>
-                    <Sort/>
+                    <Categories categoryIndex={categoryIndex} setCategoryIndex={onChangeCategory}/>
+                    <Sort value={sortItem}/>
                 </div>
                 <h2 className="content__title">Все пиццы</h2>
                 <div className="content__items">
                     {status === 'loading' ? ([...new Array(6)].map((_, index) => <Skeleton
                         key={index}/>)) : items.map((obj: any) => (
-                        // <Link key={obj.id} to={`pizza/${obj.id}`}>
-                        <PizzaBlock {...obj}/>
-                        // </Link>
+                        <Link key={obj.id} to={`pizza/${obj.id}`}>
+                            <PizzaBlock {...obj}/>
+                        </Link>
                     ))}
                 </div>
                 <Pagination currentPage={currentPage}

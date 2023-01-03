@@ -13,7 +13,7 @@ const OnePizza: React.FC = () => {
         async function fetchPizza() {
             try {
                 const {data: pizzaInfo} = await axios.get('https://639b849fd51415019757269b.mockapi.io/items/' + id);
-                console.log(pizzaInfo);
+
                 setData(pizzaInfo);
             } catch (e) {
                 console.log('some error', e);
